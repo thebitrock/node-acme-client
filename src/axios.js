@@ -112,6 +112,11 @@ instance.interceptors.response.use(null, async (error) => {
         }
     }
 
+    if (!response) {
+        log(`Caught error without response: ${error.message}, ${error.code}`);
+        return Promise.reject(error);
+    }
+
     /* Validate and return response */
     return validateStatus(response);
 });
