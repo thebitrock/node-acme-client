@@ -113,7 +113,7 @@ instance.interceptors.response.use(null, async (error) => {
     }
 
     if (!response) {
-        log(`Caught error without response: ${error.message}, ${error.code}`);
+        log(`Caught error without response: message - ${error.message}, code - ${error.code}, error response status - ${error.response.status}`);
         return Promise.reject(error);
     }
 
