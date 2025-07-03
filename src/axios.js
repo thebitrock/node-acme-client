@@ -78,6 +78,15 @@ instance.interceptors.request.use((config) => {
     return config;
 });
 
+function serializeError(err) {
+  return {
+    name: err.name,
+    message: err.message,
+    stack: err.stack,
+    ...Object.fromEntries(Object.entries(err).filter(([key]) => !['name', 'message', 'stack'].includes(key)))
+  };
+}
+
 /* Handle request retries if applicable */
 instance.interceptors.response.use(null, async (error) => {
     const { config, response } = error;
@@ -113,7 +122,7 @@ instance.interceptors.response.use(null, async (error) => {
     }
 
     if (!response) {
-        log(`Caught error without response: message - ${error.message}, code - ${error.code}`);
+        log(`Caught error without response: ${JSON.stringify(serializeError(error), null, 2)}`);
         return Promise.reject(error);
     }
 
