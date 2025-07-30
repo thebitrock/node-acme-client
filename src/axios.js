@@ -80,12 +80,9 @@ instance.interceptors.request.use((config) => {
 });
 
 function serializeError(err) {
-  return {
-    name: err.name,
-    message: err.message,
-    stack: err.stack,
-    ...Object.fromEntries(Object.entries(err).filter(([key]) => !['name', 'message', 'stack'].includes(key)))
-  };
+    return {
+        ...Object.fromEntries(Object.entries(err).filter(([key]) => !['name', 'message', 'stack'].includes(key))),
+    };
 }
 
 /* Handle request retries if applicable */
@@ -110,7 +107,7 @@ instance.interceptors.response.use(null, async (error) => {
 
             if (retryAfter > 0) {
                 log(`Found retry-after response header with value: ${response.headers['retry-after']}, waiting ${retryAfter} seconds`);
-                log(`[${code}] Rate limit exceeded: ${JSON.stringify(response, null, 2)}`);
+                log(`[${code}] Rate limit exceeded: ${JSON.stringify(serializeError(error), null, 2)}`);
             }
             else {
                 retryAfter = (retryDefaultDelay * config.retryAttempt);
