@@ -110,7 +110,7 @@ instance.interceptors.response.use(null, async (error) => {
 
             if (retryAfter > 0) {
                 log(`Found retry-after response header with value: ${response.headers['retry-after']}, waiting ${retryAfter} seconds`);
-                log(`[${code}] Rate limit exceeded: response error ${JSON.stringify(response, null, 2)}`);
+                log(`[${code}] Rate limit exceeded: ${JSON.stringify(response, null, 2)}`);
             }
             else {
                 retryAfter = (retryDefaultDelay * config.retryAttempt);
