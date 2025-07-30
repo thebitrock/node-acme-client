@@ -4,6 +4,7 @@
  */
 
 const axios = require('axios');
+const Flatted = require('flatted');
 const { parseRetryAfterHeader } = require('./util');
 const { log } = require('./logger');
 const pkg = require('./../package.json');
@@ -107,7 +108,12 @@ instance.interceptors.response.use(null, async (error) => {
 
             if (retryAfter > 0) {
                 log(`Found retry-after response header with value: ${response.headers['retry-after']}, waiting ${retryAfter} seconds`);
-                log(`[${code}] Rate limit exceeded: ${JSON.stringify(serializeError(error), null, 2)}`);
+                try {
+                    log(`[${code}] Rate limit exceeded: ${Flatted.stringify(error)}`);
+                }
+                catch (e) {
+                    log('Rate limit exceeded: cannot serialize error');
+                }
             }
             else {
                 retryAfter = (retryDefaultDelay * config.retryAttempt);
@@ -121,7 +127,6 @@ instance.interceptors.response.use(null, async (error) => {
     }
 
     if (!response) {
-        log(`Caught error without response: ${JSON.stringify(serializeError(error), null, 2)}`);
         return Promise.reject(error);
     }
 
