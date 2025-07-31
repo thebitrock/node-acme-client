@@ -117,7 +117,7 @@ instance.interceptors.response.use(null, async (error) => {
 
                 if (retryAfter > 30) {
                     log(`Retry-After header value ${retryAfter} seconds is too high, capping to 30 seconds`);
-                    return Promise.reject(error);
+                    return response ? validateStatus(response) : Promise.reject(error);
                 }
             }
             else {
