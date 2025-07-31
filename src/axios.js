@@ -114,6 +114,11 @@ instance.interceptors.response.use(null, async (error) => {
                 catch (e) {
                     log('Rate limit exceeded: cannot serialize error');
                 }
+
+                if (retryAfter > 30) {
+                    log(`Retry-After header value ${retryAfter} seconds is too high, capping to 30 seconds`);
+                    return Promise.reject(error);
+                }
             }
             else {
                 retryAfter = (retryDefaultDelay * config.retryAttempt);
